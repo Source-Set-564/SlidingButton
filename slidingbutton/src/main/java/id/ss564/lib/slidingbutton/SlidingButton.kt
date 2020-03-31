@@ -435,7 +435,7 @@ class SlidingButton : FrameLayout {
     }
 
     fun setText(@StringRes resId: Int) {
-        mText = resources.getString(resId)
+        mText = context.resources.getString(resId)
     }
 
     fun setTextSize(@Dimension size: Float) {
