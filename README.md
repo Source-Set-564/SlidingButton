@@ -1,5 +1,5 @@
 # SlidingButton
-An Android button than features can be slide
+Slide button library for android
 
 # License
     MIT License
