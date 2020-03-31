@@ -11,6 +11,10 @@
             <flag name="bold" value="1" />
             <flag name="italic" value="2" />
         </attr>
+        <attr name="sliding_text_paddingStart" format="dimension|reference"/>
+        <attr name="sliding_text_paddingTop" format="dimension|reference"/>
+        <attr name="sliding_text_paddingEnd" format="dimension|reference"/>
+        <attr name="sliding_text_paddingBottom" format="dimension|reference"/>
 
         <attr name="sliding_button_width" format="dimension|reference" />
         <attr name="sliding_button_height" format="dimension|reference" />
@@ -28,4 +32,6 @@
         <attr name="sliding_button_paddingEnd" format="dimension|reference" />
         <attr name="sliding_button_paddingBottom" format="dimension|reference" />
     </declare-styleable>
+
+    <attr name="slidingButtonStyle" format="reference"/>
 </resources>

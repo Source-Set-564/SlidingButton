@@ -21,6 +21,7 @@ import android.view.animation.Animation
 import android.view.animation.TranslateAnimation
 import android.widget.*
 import androidx.annotation.Dimension
+import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
@@ -76,6 +77,12 @@ class SlidingButton : FrameLayout {
 
     val textSize = mTextSize
 
+    /**
+     * [textPaddings]
+     * index of the array mean [0] start,[1] top,[2] end,[3] bottom
+     */
+    private var textPaddings = intArrayOf(0, 0, 0, 0)
+
     var textColors: ColorStateList? = null
         set(value) {
             field = value
@@ -126,16 +133,17 @@ class SlidingButton : FrameLayout {
 
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleInt: Int) : super(
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    constructor(context: Context, attrs: AttributeSet?, defStyleInt: Int = R.attr.slidingButtonStyle) : super(
         context,
         attrs,
         defStyleInt
-    ) {
-        initialized(attrs, defStyleInt, R.style.SlidingButton)
+    ){
+        initialized(attrs,defStyleInt,R.style.SlidingButton)
     }
 
-    @TargetApi(21)
-    constructor(context: Context, attrs: AttributeSet?, defStyleInt: Int, defStyleRes: Int) : super(
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    constructor(context: Context, attrs: AttributeSet?, defStyleInt: Int = R.attr.slidingButtonStyle, defStyleRes: Int = R.style.SlidingButton) : super(
         context,
         attrs,
         defStyleInt,
@@ -176,6 +184,22 @@ class SlidingButton : FrameLayout {
         val fontFamilyName = arr.getString(R.styleable.SlidingButton_sliding_text_fontFamily)
             ?: "sans-serif"
         textTypeface = Typeface.create(fontFamilyName, textStyle)
+        textPaddings[0] = arr.getDimensionPixelSize(
+            R.styleable.SlidingButton_sliding_text_paddingStart,
+            0
+        )
+        textPaddings[1] = arr.getDimensionPixelSize(
+            R.styleable.SlidingButton_sliding_text_paddingTop,
+            0
+        )
+        textPaddings[2] = arr.getDimensionPixelSize(
+            R.styleable.SlidingButton_sliding_text_paddingEnd,
+            0
+        )
+        textPaddings[3] = arr.getDimensionPixelSize(
+            R.styleable.SlidingButton_sliding_text_paddingBottom,
+            0
+        )
 
         /**
          * ImageView attrs configuration
@@ -277,6 +301,7 @@ class SlidingButton : FrameLayout {
 
         //configure TextView
         slidingText.background = mTextBackground
+        slidingText.setPadding(textPaddings[0], textPaddings[1], textPaddings[2], textPaddings[3])
         slidingText.text = mText
         slidingText.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTextSize)
         slidingText.setTextColor(textColors)
@@ -288,7 +313,8 @@ class SlidingButton : FrameLayout {
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         startOfButton = imageMargins[0].toFloat()
-        endOfButton = w.toFloat() - (imageSize[0].toFloat() + imageMargins[2].toFloat() + (paddingEnd * 2))
+        endOfButton =
+            w.toFloat() - (imageSize[0].toFloat() + imageMargins[2].toFloat() + (paddingEnd * 2))
     }
 
     override fun removeAllViews() = throw IllegalStateException("This method isn't allowed ")
