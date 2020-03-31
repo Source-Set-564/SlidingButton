@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SlidingButton">
+        <attr name="sliding_text" format="string|reference" />
+        <attr name="sliding_text_size" format="dimension|reference" />
+        <attr name="sliding_text_color" format="color|reference" />
+        <attr name="sliding_text_background" format="color|reference" />
+        <attr name="sliding_text_fontFamily" format="string|reference" />
+        <attr name="sliding_text_textStyle" format="flags">
+            <flag name="normal" value="0" />
+            <flag name="bold" value="1" />
+            <flag name="italic" value="2" />
+        </attr>
+
+        <attr name="sliding_button_width" format="dimension|reference" />
+        <attr name="sliding_button_height" format="dimension|reference" />
+        <attr name="sliding_button_icon" format="reference" />
+        <attr name="sliding_button_icon_tint" format="color|reference" />
+        <attr name="sliding_button_background" format="color|reference" />
+
+        <attr name="sliding_button_marginStart" format="dimension|reference" />
+        <attr name="sliding_button_marginTop" format="dimension|reference" />
+        <attr name="sliding_button_marginEnd" format="dimension|reference" />
+        <attr name="sliding_button_marginBottom" format="dimension|reference" />
+
+        <attr name="sliding_button_paddingStart" format="dimension|reference" />
+        <attr name="sliding_button_paddingTop" format="dimension|reference" />
+        <attr name="sliding_button_paddingEnd" format="dimension|reference" />
+        <attr name="sliding_button_paddingBottom" format="dimension|reference" />
+    </declare-styleable>
+</resources>
