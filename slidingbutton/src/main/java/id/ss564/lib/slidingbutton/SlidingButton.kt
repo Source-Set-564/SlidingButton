@@ -6,12 +6,10 @@ import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.ColorFilter
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.VectorDrawable
 import android.os.Build
 import android.util.AttributeSet
 import android.util.TypedValue
@@ -22,10 +20,9 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.TranslateAnimation
 import android.widget.*
+import androidx.annotation.Dimension
 import androidx.annotation.StringRes
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 
 /**
@@ -35,9 +32,15 @@ import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 class SlidingButton : FrameLayout {
 
     private lateinit var inflatedView: View
-    private lateinit var containerView: FrameLayout
     private lateinit var slidingImage: ImageView
     private lateinit var slidingText: TextView
+
+    private var statusListener: OnStatusChangeListener? = null
+    private var statusActive = false
+        set(value) {
+            field = value
+            statusListener?.onStatusChange(value)
+        }
 
     private var startOfButton = 0F
     private var endOfButton = 0F
@@ -177,7 +180,8 @@ class SlidingButton : FrameLayout {
         /**
          * ImageView attrs configuration
          */
-        val defaultButtonDrawable = ContextCompat.getDrawable(context, R.drawable.ic_default_slide_icon)
+        val defaultButtonDrawable =
+            ContextCompat.getDrawable(context, R.drawable.ic_default_slide_icon)
         buttonIcon = arr.getDrawable(R.styleable.SlidingButton_sliding_button_icon)
             ?: defaultButtonDrawable
 
@@ -247,7 +251,6 @@ class SlidingButton : FrameLayout {
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        containerView = inflatedView.findViewById(R.id.containerView)
         slidingText = inflatedView.findViewById(R.id.slidingText)
         slidingImage = inflatedView.findViewById(R.id.slidingImage)
 
@@ -279,10 +282,21 @@ class SlidingButton : FrameLayout {
         slidingText.setTextColor(textColors)
         slidingText.typeface = textTypeface
 
-        startOfButton = imageMargins[0].toFloat() + paddingStart.toFloat()
-
         setupSlideTouch()
     }
+
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        startOfButton = imageMargins[0].toFloat()
+        endOfButton = w.toFloat() - (imageSize[0].toFloat() + imageMargins[2].toFloat() + (paddingEnd * 2))
+    }
+
+    override fun removeAllViews() = throw IllegalStateException("This method isn't allowed ")
+
+    override fun removeView(view: View?) = throw IllegalStateException("This method isn't allowed ")
+
+    override fun removeViewAt(index: Int) =
+        throw IllegalStateException("This method isn't allowed ")
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupSlideTouch() {
@@ -306,11 +320,9 @@ class SlidingButton : FrameLayout {
     private fun onUp() = when {
         slidingImage.x + slidingImage.width >= this.width * 0.58F -> {
             animatedToEnd()
-            Toast.makeText(context, "Sliding complete", Toast.LENGTH_SHORT).show()
         }
         slidingImage.x <= startOfButton -> {
             translateAnimation()
-            Toast.makeText(context, "Do slide to complete", Toast.LENGTH_SHORT).show()
         }
         else -> animatedToStart()
     }
@@ -322,14 +334,26 @@ class SlidingButton : FrameLayout {
         floatAnimator.addUpdateListener {
             slidingImage.x = it.animatedValue as Float
         }
+        floatAnimator.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(animation: Animator?) {}
+
+            override fun onAnimationEnd(animation: Animator?) {
+                isActivated = false
+                if (statusActive) statusActive = false
+            }
+
+            override fun onAnimationCancel(animation: Animator?) {}
+
+            override fun onAnimationStart(animation: Animator?) {}
+        })
         floatAnimator.duration = 115L
         floatAnimator.interpolator = FastOutSlowInInterpolator()
         floatAnimator.start()
     }
 
     private fun animatedToEnd() {
-        endOfButton =
-            this.width.toFloat() - (slidingImage.width.toFloat() + imageMargins[2].toFloat() + paddingEnd.toFloat())
+        /*endOfButton =
+            this.width.toFloat() - (imageSize[0].toFloat() + imageMargins[2].toFloat() + (paddingStart.toFloat() / 2))*/
         val floatAnimator = ValueAnimator.ofFloat(slidingImage.x, endOfButton)
         floatAnimator.addUpdateListener {
             slidingImage.x = it.animatedValue as Float
@@ -339,6 +363,7 @@ class SlidingButton : FrameLayout {
 
             override fun onAnimationEnd(animation: Animator?) {
                 isActivated = true
+                if (!statusActive) statusActive = true
             }
 
             override fun onAnimationCancel(animation: Animator?) {}
@@ -413,7 +438,23 @@ class SlidingButton : FrameLayout {
         mText = resources.getString(resId)
     }
 
-    fun setTextSize(size: Float) {
+    fun setTextSize(@Dimension size: Float) {
         mTextSize = size
+    }
+
+    fun setOnStatusChangeListener(listener: OnStatusChangeListener?) {
+        statusListener = listener
+    }
+
+    fun setOnStatusChangeListener(l: (active: Boolean) -> Unit) {
+        this.setOnStatusChangeListener(object : OnStatusChangeListener {
+            override fun onStatusChange(active: Boolean) {
+                l.invoke(active)
+            }
+        })
+    }
+
+    interface OnStatusChangeListener {
+        fun onStatusChange(active: Boolean)
     }
 }
