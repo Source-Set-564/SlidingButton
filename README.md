@@ -1,4 +1,8 @@
 # SlidingButton
+
+![Min SDK](https://img.shields.io/badge/Min%20Sdk-17-orange)
+![Version](https://img.shields.io/badge/Version-v1.0.0--rc-blue)
+
 Slide button library for android
 
 # License
