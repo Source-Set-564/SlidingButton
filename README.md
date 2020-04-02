@@ -20,7 +20,7 @@ Then **sync** your gradle. If you have errors, try to add maven  url to your `bu
 ```groovy
 repositories {
     ...
-	maven { url 'https://dl.bintray.com/ss564/SlidingButton' }
+    maven { url 'https://dl.bintray.com/ss564/SlidingButton' }
     ...
 }
 ```
@@ -36,9 +36,9 @@ In your *layout.xml* file, add the view
 
 ```xml
 <id.ss564.lib.slidingbutton.SlidingButton
-		android:id="@+id/slidingButton"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"/>
+    android:id="@+id/slidingButton"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"/>
 ```
 
 Yeah... just add like code above. It's pretty simple :smile:
@@ -79,9 +79,9 @@ class MainActivity : AppCompatActivity() {
         
         //access view using synthetic, do your own style to access the view :)
         slidingButton.setOnStatusChangeListener { active ->
-			//or using `object : SlidingButton.OnStatusChangeListener` instead of lambda
-			
-			//do what you wanna to do
+	    //or using `object : SlidingButton.OnStatusChangeListener` instead of lambda
+	    
+	    //do what you wanna to do
         }
     }
 }
