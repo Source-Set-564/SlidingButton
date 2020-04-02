@@ -3,23 +3,56 @@
 ![Min SDK](https://img.shields.io/badge/Min%20Sdk-17-orange)
 ![Version](https://img.shields.io/badge/Version-v1.0.0--rc-blue)
 
-Slide button library for android
+Slide button library for android, we hope this library is useful and easy to customize as you needed.
+
+
+
+# Gradle
+
+```groovy
+...
+    dependencies {
+        
+        implementation 'id.ss564.lib.slidingbutton:slidingbutton:<latest-version>'
+        
+    }
+...
+```
+
+
+
+
+
+# How To Use
+In your layout.xml file, add this view
+
+```xml
+<id.ss564.lib.slidingbutton.SlidingButton
+	android:id="@+id/slidingButton"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+/>
+```
+
+
+
+
 
 # License
     MIT License
-
+    
     Copyright (c) 2020 Source Set 564 Contributors
-
+    
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
     in the Software without restriction, including without limitation the rights
     to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
     copies of the Software, and to permit persons to whom the Software is
     furnished to do so, subject to the following conditions:
-
+    
     The above copyright notice and this permission notice shall be included in all
     copies or substantial portions of the Software.
-
+    
     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
     FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
