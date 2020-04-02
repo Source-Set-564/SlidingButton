@@ -1,5 +1,6 @@
 package id.ss564.sample.swipebuttonexample
 
+import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -10,8 +11,5 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        slidingButton.setOnStatusChangeListener {
-            Toast.makeText(this, "Status : $it", Toast.LENGTH_SHORT).show()
-        }
     }
 }

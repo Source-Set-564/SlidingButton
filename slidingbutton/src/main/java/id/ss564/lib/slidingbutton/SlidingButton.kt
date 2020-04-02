@@ -3,12 +3,12 @@ package id.ss564.lib.slidingbutton
 import android.animation.Animator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.Typeface
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.AttributeSet
@@ -16,12 +16,11 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.view.animation.AccelerateDecelerateInterpolator
-import android.view.animation.Animation
-import android.view.animation.TranslateAnimation
+import android.view.animation.*
 import android.widget.*
+import androidx.annotation.ColorInt
 import androidx.annotation.Dimension
-import androidx.annotation.RequiresApi
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
@@ -32,7 +31,7 @@ import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 
 class SlidingButton : FrameLayout {
 
-    private lateinit var inflatedView: View
+    private val inflatedView: View
     private lateinit var slidingImage: ImageView
     private lateinit var slidingText: TextView
 
@@ -45,6 +44,8 @@ class SlidingButton : FrameLayout {
 
     private var startOfButton = 0F
     private var endOfButton = 0F
+
+    private val stateListIconTint: ColorStateList
 
     var buttonBackground: Drawable? = null
         set(value) {
@@ -60,13 +61,26 @@ class SlidingButton : FrameLayout {
                 slidingImage.setImageDrawable(value)
         }
 
-    private var mTextBackground: Drawable? = null
+    var iconScaleType: ImageView.ScaleType = ImageView.ScaleType.CENTER_INSIDE
+        set(value) {
+            when (value) {
+                ImageView.ScaleType.CENTER_INSIDE,
+                ImageView.ScaleType.CENTER_CROP,
+                ImageView.ScaleType.CENTER,
+                ImageView.ScaleType.FIT_CENTER,
+                ImageView.ScaleType.FIT_XY -> {
+                    field = value
+                    if (::slidingImage.isInitialized) slidingImage.scaleType = value
+                }
+                else -> throw IllegalArgumentException("ScaleType $value aren't allowed, please use CENTER_INSIDE,FIT_CENTER, or FIT_XY")
+            }
+        }
+
+    var textBackground: Drawable? = null
         set(value) {
             field = value
             if (::slidingText.isInitialized) slidingText.background = value
         }
-
-    val textBackground = mTextBackground
 
     private var mTextSize: Float = 0F
         private set(value) {
@@ -81,7 +95,7 @@ class SlidingButton : FrameLayout {
      * [textPaddings]
      * index of the array mean [0] start,[1] top,[2] end,[3] bottom
      */
-    private var textPaddings = intArrayOf(0, 0, 0, 0)
+    val textPaddings = intArrayOf(0, 0, 0, 0)
 
     var textColors: ColorStateList? = null
         set(value) {
@@ -123,36 +137,29 @@ class SlidingButton : FrameLayout {
         get() = imageSize[1]
 
     /**
-     * [imageMargins],[imagePaddings]
+     * [buttonMargins],[buttonPaddings]
      * index of the array mean [0] start,[1] top,[2] end,[3] bottom
      */
-    private val imageMargins = intArrayOf(0, 0, 0, 0)
-    private val imagePaddings = intArrayOf(0, 0, 0, 0)
+    val buttonMargins = intArrayOf(0, 0, 0, 0)
+    val buttonPaddings = intArrayOf(0, 0, 0, 0)
 
     constructor(context: Context) : this(context, null)
 
-    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
-
-    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    constructor(context: Context, attrs: AttributeSet?, defStyleInt: Int = R.attr.slidingButtonStyle) : super(
+    constructor(context: Context, attrs: AttributeSet?) : this(
         context,
+        attrs,
+        R.attr.slidingButtonStyle
+    )
+
+    constructor(
+        _context: Context,
+        attrs: AttributeSet?,
+        defStyleInt: Int = R.attr.slidingButtonStyle
+    ) : super(
+        _context,
         attrs,
         defStyleInt
-    ){
-        initialized(attrs,defStyleInt,R.style.SlidingButton)
-    }
-
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    constructor(context: Context, attrs: AttributeSet?, defStyleInt: Int = R.attr.slidingButtonStyle, defStyleRes: Int = R.style.SlidingButton) : super(
-        context,
-        attrs,
-        defStyleInt,
-        defStyleRes
     ) {
-        initialized(attrs, defStyleInt, defStyleRes)
-    }
-
-    private fun initialized(attrs: AttributeSet?, defStyleInt: Int, defStyleRes: Int) {
         val colorPrimary = TypedValue()
         context.theme.resolveAttribute(R.attr.colorPrimary, colorPrimary, true)
 
@@ -163,7 +170,7 @@ class SlidingButton : FrameLayout {
             attrs,
             R.styleable.SlidingButton,
             defStyleInt,
-            defStyleRes
+            R.style.SlidingButton
         )
 
         /**
@@ -176,7 +183,7 @@ class SlidingButton : FrameLayout {
             ?: ColorStateList.valueOf(colorAccent.data)
 
         mText = arr.getString(R.styleable.SlidingButton_sliding_text)
-        mTextBackground = arr.getDrawable(R.styleable.SlidingButton_sliding_text_background)
+        textBackground = arr.getDrawable(R.styleable.SlidingButton_sliding_text_background)
 
         val textStyle = arr.getInteger(R.styleable.SlidingButton_sliding_text_textStyle, 0).let {
             if (it < 0) 0 else it
@@ -209,21 +216,17 @@ class SlidingButton : FrameLayout {
         buttonIcon = arr.getDrawable(R.styleable.SlidingButton_sliding_button_icon)
             ?: defaultButtonDrawable
 
-        val stateListIconTint =
+        stateListIconTint =
             arr.getColorStateList(R.styleable.SlidingButton_sliding_button_icon_tint)
+                ?: ColorStateList.valueOf(colorAccent.data)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             buttonIcon?.setTintList(stateListIconTint)
-        } else if (stateListIconTint != null) {
+        } else {
             buttonIcon?.colorFilter =
                 PorterDuffColorFilter(stateListIconTint.defaultColor, PorterDuff.Mode.SRC_IN)
         }
 
-        val defaultButtonBackground = ContextCompat.getDrawable(
-            context,
-            R.drawable.default_slidingbutton_background
-        )
         buttonBackground = arr.getDrawable(R.styleable.SlidingButton_sliding_button_background)
-            ?: defaultButtonBackground
 
         val defaultButtonSize = resources.getDimensionPixelSize(R.dimen.default_image_height)
         imageSize[0] = arr.getDimensionPixelSize(
@@ -235,36 +238,47 @@ class SlidingButton : FrameLayout {
             defaultButtonSize
         )
 
-        imageMargins[0] = arr.getDimensionPixelSize(
+        val scaleName = arr.getInteger(R.styleable.SlidingButton_sliding_icon_scaleType, 7).let {
+            when (it) {
+                1 -> "FIT_XY"
+                3 -> "FIT_CENTER"
+                5 -> "CENTER"
+                6 -> "CENTER_CROP"
+                else -> "CENTER_INSIDE"
+            }
+        }
+        iconScaleType = ImageView.ScaleType.valueOf(scaleName)
+
+        buttonMargins[0] = arr.getDimensionPixelSize(
             R.styleable.SlidingButton_sliding_button_marginStart,
             0
         )
-        imageMargins[1] = arr.getDimensionPixelSize(
+        buttonMargins[1] = arr.getDimensionPixelSize(
             R.styleable.SlidingButton_sliding_button_marginTop,
             0
         )
-        imageMargins[2] = arr.getDimensionPixelSize(
+        buttonMargins[2] = arr.getDimensionPixelSize(
             R.styleable.SlidingButton_sliding_button_marginEnd,
             0
         )
-        imageMargins[3] = arr.getDimensionPixelSize(
+        buttonMargins[3] = arr.getDimensionPixelSize(
             R.styleable.SlidingButton_sliding_button_marginBottom,
             0
         )
 
-        imagePaddings[0] = arr.getDimensionPixelSize(
+        buttonPaddings[0] = arr.getDimensionPixelSize(
             R.styleable.SlidingButton_sliding_button_paddingStart,
             0
         )
-        imagePaddings[1] = arr.getDimensionPixelSize(
+        buttonPaddings[1] = arr.getDimensionPixelSize(
             R.styleable.SlidingButton_sliding_button_paddingTop,
             0
         )
-        imagePaddings[2] = arr.getDimensionPixelSize(
+        buttonPaddings[2] = arr.getDimensionPixelSize(
             R.styleable.SlidingButton_sliding_button_paddingEnd,
             0
         )
-        imagePaddings[3] = arr.getDimensionPixelSize(
+        buttonPaddings[3] = arr.getDimensionPixelSize(
             R.styleable.SlidingButton_sliding_button_paddingBottom,
             0
         )
@@ -284,23 +298,24 @@ class SlidingButton : FrameLayout {
             it.width = imageSize[0]
             it.height = imageSize[1]
             it.setMargins(
-                imageMargins[0],
-                imageMargins[1],
-                imageMargins[2],
-                imageMargins[3]
+                buttonMargins[0],
+                buttonMargins[1],
+                buttonMargins[2],
+                buttonMargins[3]
             )
             slidingImage.layoutParams = it
         }
         slidingImage.setPadding(
-            imagePaddings[0],
-            imagePaddings[1],
-            imagePaddings[2],
-            imagePaddings[3]
+            buttonPaddings[0],
+            buttonPaddings[1],
+            buttonPaddings[2],
+            buttonPaddings[3]
         )
+        slidingImage.scaleType = iconScaleType
         slidingImage.setImageDrawable(buttonIcon)
 
         //configure TextView
-        slidingText.background = mTextBackground
+        slidingText.background = textBackground
         slidingText.setPadding(textPaddings[0], textPaddings[1], textPaddings[2], textPaddings[3])
         slidingText.text = mText
         slidingText.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTextSize)
@@ -312,9 +327,9 @@ class SlidingButton : FrameLayout {
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
-        startOfButton = imageMargins[0].toFloat()
+        startOfButton = buttonMargins[0].toFloat()
         endOfButton =
-            w.toFloat() - (imageSize[0].toFloat() + imageMargins[2].toFloat() + (paddingEnd * 2))
+            w.toFloat() - (imageSize[0].toFloat() + buttonMargins[2].toFloat() + (paddingEnd * 2))
     }
 
     override fun removeAllViews() = throw IllegalStateException("This method isn't allowed ")
@@ -378,8 +393,6 @@ class SlidingButton : FrameLayout {
     }
 
     private fun animatedToEnd() {
-        /*endOfButton =
-            this.width.toFloat() - (imageSize[0].toFloat() + imageMargins[2].toFloat() + (paddingStart.toFloat() / 2))*/
         val floatAnimator = ValueAnimator.ofFloat(slidingImage.x, endOfButton)
         floatAnimator.addUpdateListener {
             slidingImage.x = it.animatedValue as Float
@@ -424,7 +437,6 @@ class SlidingButton : FrameLayout {
         }
     }
 
-
     private fun translateAnimation() {
         val animation = TranslateAnimation(0F, measuredWidth.toFloat(), 0F, 0F)
         animation.interpolator = AccelerateDecelerateInterpolator()
@@ -433,8 +445,15 @@ class SlidingButton : FrameLayout {
             override fun onAnimationRepeat(animation: Animation?) {}
 
             override fun onAnimationEnd(animation: Animation?) {
-                val anim = TranslateAnimation(-slidingImage.width.toFloat(), 0F, 0F, 0F)
-                anim.interpolator = AccelerateDecelerateInterpolator()
+                val anim = ScaleAnimation(
+                    0.35F,
+                    1F,
+                    0.35F,
+                    1F,
+                    slidingImage.width.toFloat() / 2F,
+                    slidingImage.height.toFloat() / 2F
+                )
+                anim.interpolator = DecelerateInterpolator()
                 anim.duration = 225L
                 slidingImage.startAnimation(anim)
             }
@@ -444,16 +463,11 @@ class SlidingButton : FrameLayout {
         slidingImage.startAnimation(animation)
     }
 
-    override fun setActivated(activated: Boolean) {
-        super.setActivated(activated)
-        slidingText.isActivated = activated
-        slidingImage.isActivated = activated
-    }
-
     override fun setEnabled(enabled: Boolean) {
         super.setEnabled(enabled)
         slidingText.isEnabled = enabled
         slidingImage.isEnabled = enabled
+        changeStateDrawablePreLollipop()
     }
 
     fun setText(text: String) {
@@ -468,6 +482,70 @@ class SlidingButton : FrameLayout {
         mTextSize = size
     }
 
+    fun setTextColor(@ColorInt color: Int) {
+        textColors = ColorStateList.valueOf(color)
+    }
+
+    fun setTextBackground(@DrawableRes resId: Int) {
+        textBackground = ContextCompat.getDrawable(context, resId)
+    }
+
+    fun setTextBackgroundColor(@ColorInt color: Int) {
+        when (textBackground) {
+            is ColorDrawable -> (slidingText.background as ColorDrawable).color = color
+            else -> textBackground = ColorDrawable(color)
+        }
+    }
+
+    fun setTextPadding(start: Int, top: Int, end: Int, bottom: Int) {
+        textPaddings[0] = start
+        textPaddings[1] = top
+        textPaddings[2] = end
+        textPaddings[3] = bottom
+        slidingText.setPadding(textPaddings[0], textPaddings[1], textPaddings[2], textPaddings[3])
+    }
+
+    fun setButtonIcon(@DrawableRes resId: Int) {
+        buttonIcon = ContextCompat.getDrawable(context, resId)
+    }
+
+    fun setButtonBackground(@DrawableRes resId: Int) {
+        buttonBackground = ContextCompat.getDrawable(context, resId)
+    }
+
+    fun setButtonBackgroundColor(@ColorInt color: Int) {
+        when (buttonBackground) {
+            is ColorDrawable -> (slidingImage.background as ColorDrawable).color = color
+            else -> buttonBackground = ColorDrawable(color)
+        }
+    }
+
+    fun setButtonPadding(start: Int, top: Int, end: Int, bottom: Int) {
+        buttonPaddings[0] = start
+        buttonPaddings[1] = top
+        buttonPaddings[2] = end
+        buttonPaddings[3] = bottom
+        slidingImage.setPadding(
+            buttonPaddings[0],
+            buttonPaddings[1],
+            buttonPaddings[2],
+            buttonPaddings[3]
+        )
+    }
+
+    fun setButtonMargin(start: Int, top: Int, end: Int, bottom: Int) {
+        buttonMargins[0] = start
+        buttonMargins[1] = top
+        buttonMargins[2] = end
+        buttonMargins[3] = bottom
+        slidingImage.layoutParams.let { it as LayoutParams }.setMargins(
+            buttonMargins[0],
+            buttonMargins[1],
+            buttonMargins[2],
+            buttonMargins[3]
+        )
+    }
+
     fun setOnStatusChangeListener(listener: OnStatusChangeListener?) {
         statusListener = listener
     }
@@ -478,6 +556,22 @@ class SlidingButton : FrameLayout {
                 l.invoke(active)
             }
         })
+    }
+
+    override fun setActivated(activated: Boolean) {
+        super.setActivated(activated)
+        changeStateDrawablePreLollipop()
+    }
+
+    private fun changeStateDrawablePreLollipop() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) return
+
+        slidingImage.drawable.colorFilter = PorterDuffColorFilter(
+            stateListIconTint.getColorForState(
+                slidingImage.drawableState,
+                stateListIconTint.defaultColor
+            ), PorterDuff.Mode.SRC_IN
+        )
     }
 
     interface OnStatusChangeListener {

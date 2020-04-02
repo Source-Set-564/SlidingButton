@@ -11,15 +11,22 @@
             <flag name="bold" value="1" />
             <flag name="italic" value="2" />
         </attr>
-        <attr name="sliding_text_paddingStart" format="dimension|reference"/>
-        <attr name="sliding_text_paddingTop" format="dimension|reference"/>
-        <attr name="sliding_text_paddingEnd" format="dimension|reference"/>
-        <attr name="sliding_text_paddingBottom" format="dimension|reference"/>
+        <attr name="sliding_text_paddingStart" format="dimension|reference" />
+        <attr name="sliding_text_paddingTop" format="dimension|reference" />
+        <attr name="sliding_text_paddingEnd" format="dimension|reference" />
+        <attr name="sliding_text_paddingBottom" format="dimension|reference" />
 
         <attr name="sliding_button_width" format="dimension|reference" />
         <attr name="sliding_button_height" format="dimension|reference" />
         <attr name="sliding_button_icon" format="reference" />
         <attr name="sliding_button_icon_tint" format="color|reference" />
+        <attr name="sliding_icon_scaleType" format="enum">
+            <enum name="centerInside" value="7" />
+            <enum name="centerCrop" value="6" />
+            <enum name="center" value="5" />
+            <enum name="fitCenter" value="3" />
+            <enum name="fitXY" value="1" />
+        </attr>
         <attr name="sliding_button_background" format="color|reference" />
 
         <attr name="sliding_button_marginStart" format="dimension|reference" />
@@ -33,5 +40,5 @@
         <attr name="sliding_button_paddingBottom" format="dimension|reference" />
     </declare-styleable>
 
-    <attr name="slidingButtonStyle" format="reference"/>
+    <attr name="slidingButtonStyle" format="reference" />
 </resources>

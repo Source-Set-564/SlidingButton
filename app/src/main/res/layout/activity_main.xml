@@ -8,16 +8,71 @@
 
     <id.ss564.lib.slidingbutton.SlidingButton
         android:id="@+id/slidingButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        app:sliding_text_paddingStart="48dp"
-        app:sliding_text_paddingEnd="48dp"
+        android:background="@drawable/sliding_shape_background"
+        app:layout_constraintBottom_toTopOf="@id/slidingButton1"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <id.ss564.lib.slidingbutton.SlidingButton
+        android:id="@+id/slidingButton1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/sliding_rect_background"
+        app:layout_constraintBottom_toTopOf="@id/slidingButton2"
+        app:layout_constraintTop_toBottomOf="@id/slidingButton"
+        app:sliding_button_background="@drawable/oval_morp_shadow"
+        app:sliding_button_height="84dp"
+        app:sliding_button_icon="@drawable/ic_favorite"
+        app:sliding_button_icon_tint="@drawable/sliding_icon_tint"
+        app:sliding_button_width="84dp"
+        app:sliding_icon_scaleType="centerInside"
+        app:sliding_text="@string/love_it"
+        app:sliding_text_color="#535353"
+        app:sliding_text_textStyle="bold" />
+
+    <id.ss564.lib.slidingbutton.SlidingButton
+        android:id="@+id/slidingButton2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/sliding_rect_background_2"
+        app:layout_constraintBottom_toTopOf="@id/slidingButton3"
+        app:layout_constraintTop_toBottomOf="@id/slidingButton1"
+        app:sliding_button_background="@drawable/sliding_button_oval_background_2"
+        app:sliding_button_height="48dp"
+        app:sliding_button_icon="@drawable/sliding_icon_example_2"
+        app:sliding_button_icon_tint="@android:color/white"
+        app:sliding_button_marginBottom="4dp"
+        app:sliding_button_marginEnd="4dp"
+        app:sliding_button_marginStart="4dp"
+        app:sliding_button_marginTop="4dp"
+        app:sliding_button_width="48dp"
+        app:sliding_icon_scaleType="centerInside"
+        app:sliding_text="UNLOCK"
+        app:sliding_text_color="@android:color/white"
+        app:sliding_text_fontFamily="sans-serif-condensed-medium" />
+
+    <id.ss564.lib.slidingbutton.SlidingButton
+        android:id="@+id/slidingButton3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/sliding_rect_background_3"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toBottomOf="@id/slidingButton2"
+        app:sliding_button_background="@drawable/sliding_button_oval_background_3"
+        app:sliding_button_height="48dp"
+        app:sliding_button_icon="@drawable/sliding_icon_example_3"
+        app:sliding_button_icon_tint="@android:color/white"
+        app:sliding_button_width="48dp"
+        app:sliding_icon_scaleType="centerInside"
+        app:sliding_text="@null" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
