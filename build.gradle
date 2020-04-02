@@ -16,6 +16,10 @@ buildscript {
     }
 }
 
+plugins {
+    id "com.jfrog.bintray" version "1.8.4"
+}
+
 allprojects {
     repositories {
         google()
@@ -26,4 +30,8 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+subprojects {
+    tasks.withType(Javadoc).all { enabled = false }
 }
