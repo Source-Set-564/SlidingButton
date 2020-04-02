@@ -1,7 +1,7 @@
 # SlidingButton
 
 ![Min SDK](https://img.shields.io/badge/Min%20Sdk-17-orange)
-![Version](https://img.shields.io/badge/Version-v1.0.0--rc-blue)
+![Version](https://img.shields.io/badge/Version-v1.0.0-blue)
 
 Slide button library for android, we hope this library is useful and easy to customize as you needed.
 
