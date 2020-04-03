@@ -1,7 +1,7 @@
 # SlidingButton
 
 ![Min SDK](https://img.shields.io/badge/Min%20Sdk-17-orange)
-![Version](https://img.shields.io/badge/Version-v1.0.0-blue)
+![Version](https://img.shields.io/badge/Version-v1.0.1-blue)
 
 Slide button library for android, we hope this library is useful and easy to customize as you needed.
 
@@ -21,15 +21,7 @@ Add **dependencies** to your `build.gradle` file at `:app` or modules level
 implementation 'id.ss564.lib.slidingbutton:slidingbutton:<latest-version>'
 ```
 
-Then **sync** your gradle. If you have errors, try add maven  url to your `build.gradle` project level
-
-```groovy
-repositories {
-    ...
-    maven { url 'https://dl.bintray.com/ss564/SlidingButton' }
-    ...
-}
-```
+Then **sync** your gradle.
 
 
 ----------
