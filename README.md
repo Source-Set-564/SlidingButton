@@ -5,7 +5,9 @@
 
 Slide button library for android, we hope this library is useful and easy to customize as you needed.
 
+<img src="/previews/sliding_button_sample_preview.gif" alt="Preview" style="zoom:28%;" />
 
+--------
 
 # Gradle
 
@@ -27,7 +29,12 @@ repositories {
 
 
 
+
+
+----------
+
 # How To Use
+
 > **Notes** : This guide is still in process, I will work on it as soon as possible. So, keep checking later if you see this note.
 
 
@@ -138,6 +145,8 @@ If you wanna customizing, please attention to the following attributes:
 
 
 
+
+--------
 
 # License
     MIT License
