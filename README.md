@@ -21,7 +21,7 @@ Add **dependencies** to your `build.gradle` file at `:app` or modules level
 implementation 'id.ss564.lib.slidingbutton:slidingbutton:<latest-version>'
 ```
 
-Then **sync** your gradle. If you have errors, try to add maven  url to your `build.gradle` project level
+Then **sync** your gradle. If you have errors, try add maven  url to your `build.gradle` project level
 
 ```groovy
 repositories {
@@ -30,8 +30,6 @@ repositories {
     ...
 }
 ```
-
-
 
 
 ----------
