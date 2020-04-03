@@ -5,7 +5,11 @@
 
 Slide button library for android, we hope this library is useful and easy to customize as you needed.
 
-<img src="/previews/sliding_button_sample_preview.gif" alt="Preview" style="zoom:28%;" />
+### Sample Preview
+
+<center style="background:#FCFCFC;">
+<img src="/previews/sliding_button_sample_preview.gif" alt="Preview" width="300" />
+</center>
 
 --------
 
@@ -26,7 +30,6 @@ repositories {
     ...
 }
 ```
-
 
 
 
