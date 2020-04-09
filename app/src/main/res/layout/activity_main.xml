@@ -13,6 +13,10 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/sliding_shape_background"
+        app:sliding_button_marginTop="4dp"
+        app:sliding_button_marginStart="4dp"
+        app:sliding_button_marginEnd="4dp"
+        app:sliding_button_marginBottom="4dp"
         app:layout_constraintBottom_toTopOf="@id/slidingButton1"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -74,5 +78,4 @@
         app:sliding_button_width="48dp"
         app:sliding_icon_scaleType="centerInside"
         app:sliding_text="@null" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

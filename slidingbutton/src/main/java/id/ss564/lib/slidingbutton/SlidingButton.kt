@@ -72,7 +72,7 @@ class SlidingButton : FrameLayout {
                     field = value
                     if (::slidingImage.isInitialized) slidingImage.scaleType = value
                 }
-                else -> throw IllegalArgumentException("ScaleType $value aren't allowed, please use CENTER_INSIDE,FIT_CENTER, or FIT_XY")
+                else -> throw IllegalArgumentException("ScaleType $value aren't allowed, please use CENTER, CENTER_CROP, CENTER_INSIDE,FIT_CENTER, or FIT_XY")
             }
         }
 
@@ -297,15 +297,13 @@ class SlidingButton : FrameLayout {
         slidingImage.layoutParams.let { it as LayoutParams }.also {
             it.width = imageSize[0]
             it.height = imageSize[1]
-            it.setMargins(
-                buttonMargins[0],
-                buttonMargins[1],
-                buttonMargins[2],
-                buttonMargins[3]
-            )
+            it.marginStart = buttonMargins[0]
+            it.topMargin = buttonMargins[1]
+            it.marginEnd = buttonMargins[2]
+            it.bottomMargin = buttonMargins[3]
             slidingImage.layoutParams = it
         }
-        slidingImage.setPadding(
+        slidingImage.setPaddingRelative(
             buttonPaddings[0],
             buttonPaddings[1],
             buttonPaddings[2],
@@ -316,20 +314,32 @@ class SlidingButton : FrameLayout {
 
         //configure TextView
         slidingText.background = textBackground
-        slidingText.setPadding(textPaddings[0], textPaddings[1], textPaddings[2], textPaddings[3])
+        slidingText.setPaddingRelative(
+            textPaddings[0],
+            textPaddings[1],
+            textPaddings[2],
+            textPaddings[3]
+        )
         slidingText.text = mText
         slidingText.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTextSize)
         slidingText.setTextColor(textColors)
         slidingText.typeface = textTypeface
 
         setupSlideTouch()
+        /*if (context.resources.configuration.layoutDirection == View.LAYOUT_DIRECTION_RTL) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                slidingImage.drawable.isAutoMirrored = true
+            } else {
+                slidingImage.rotationY = 0F
+            }
+        }*/
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         startOfButton = buttonMargins[0].toFloat()
         endOfButton =
-            w.toFloat() - (imageSize[0].toFloat() + buttonMargins[2].toFloat() + (paddingEnd * 2))
+            w.toFloat() - (imageSize[0].toFloat() + buttonMargins[2].toFloat() + paddingEnd.toFloat() + paddingStart.toFloat())
     }
 
     override fun removeAllViews() = throw IllegalStateException("This method isn't allowed ")
@@ -342,9 +352,14 @@ class SlidingButton : FrameLayout {
     @SuppressLint("ClickableViewAccessibility")
     private fun setupSlideTouch() {
         setOnTouchListener { _, event ->
+            val startTouch = paddingStart + buttonMargins[0]
+            val maxStartTouch = paddingStart + paddingEnd + buttonMargins[0] + imageSize[0]
+            val isStartTouch = event.x in startTouch.toFloat()..maxStartTouch.toFloat()
+
+            val maxEndTouch = this.width - paddingEnd - buttonMargins[2]
+            val isEndTouch = event.x in endOfButton..maxEndTouch.toFloat()
             when (event.action) {
-                MotionEvent.ACTION_DOWN -> (event.x <= slidingImage.x + slidingImage.width && slidingImage.x < slidingImage.width)
-                        || (event.x >= this.width - slidingImage.width && slidingImage.x > slidingImage.width)
+                MotionEvent.ACTION_DOWN -> (isStartTouch && !statusActive) || (isEndTouch && statusActive)
                 MotionEvent.ACTION_MOVE -> {
                     onMove(event)
                     true
@@ -358,14 +373,33 @@ class SlidingButton : FrameLayout {
         }
     }
 
-    private fun onUp() = when {
-        slidingImage.x + slidingImage.width >= this.width * 0.58F -> {
+    private fun onUp() {
+//        val isRtl = context.resources.configuration.layoutDirection == View.LAYOUT_DIRECTION_RTL
+        when {
+            slidingImage.x + slidingImage.width >= this.width * 0.58F -> {
+                animatedToEnd()
+            }
+            slidingImage.x <= startOfButton -> {
+                translateAnimation()
+            }
+            else -> animatedToStart()
+        }
+    }
+
+    fun changeStatus(active: Boolean, animated: Boolean = false) {
+        if (animated && active) {
+            statusActive = true
             animatedToEnd()
+        } else if (animated && !active) {
+            statusActive = false
+            animatedToStart()
+        } else if (active) {
+            slidingImage.x = endOfButton
+            statusActive = true
+        } else {
+            slidingImage.x = startOfButton
+            statusActive = false
         }
-        slidingImage.x <= startOfButton -> {
-            translateAnimation()
-        }
-        else -> animatedToStart()
     }
 
     private fun animatedToStart() {
@@ -379,13 +413,22 @@ class SlidingButton : FrameLayout {
             override fun onAnimationRepeat(animation: Animator?) {}
 
             override fun onAnimationEnd(animation: Animator?) {
+                if (context.resources.configuration.layoutDirection == View.LAYOUT_DIRECTION_RTL) {
+                    isActivated = true
+                    if (!statusActive) statusActive = true
+                    return
+                }
                 isActivated = false
                 if (statusActive) statusActive = false
             }
 
             override fun onAnimationCancel(animation: Animator?) {}
 
-            override fun onAnimationStart(animation: Animator?) {}
+            override fun onAnimationStart(animation: Animator?) {
+                if (context.resources.configuration.layoutDirection == View.LAYOUT_DIRECTION_RTL) {
+                    isActivated = false
+                }
+            }
         })
         floatAnimator.duration = 115L
         floatAnimator.interpolator = FastOutSlowInInterpolator()
@@ -401,6 +444,11 @@ class SlidingButton : FrameLayout {
             override fun onAnimationRepeat(animation: Animator?) {}
 
             override fun onAnimationEnd(animation: Animator?) {
+                if (context.resources.configuration.layoutDirection == View.LAYOUT_DIRECTION_RTL) {
+                    isActivated = false
+                    if (statusActive) statusActive = false
+                    return
+                }
                 isActivated = true
                 if (!statusActive) statusActive = true
             }
@@ -408,7 +456,9 @@ class SlidingButton : FrameLayout {
             override fun onAnimationCancel(animation: Animator?) {}
 
             override fun onAnimationStart(animation: Animator?) {
-                isActivated = false
+                if (context.resources.configuration.layoutDirection != View.LAYOUT_DIRECTION_RTL) {
+                    isActivated = false
+                }
             }
         })
         floatAnimator.duration = 115L
@@ -438,7 +488,7 @@ class SlidingButton : FrameLayout {
     }
 
     private fun translateAnimation() {
-        val animation = TranslateAnimation(0F, measuredWidth.toFloat(), 0F, 0F)
+        val animation = TranslateAnimation(0F, endOfButton, 0F, 0F)
         animation.interpolator = AccelerateDecelerateInterpolator()
         animation.duration = 350L
         animation.setAnimationListener(object : Animation.AnimationListener {
