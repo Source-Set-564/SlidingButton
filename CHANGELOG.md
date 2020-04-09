@@ -1,5 +1,10 @@
 # Change Log
 
+## Version 1.0.2 _(09 Apr 2020)_
+Add method to change status programmatically. So you can change status use method `changeStatus(active,animated)` as you needed
+
+-------
+
 ## Version 1.0.1 _(03 Apr 2020)_
 Linked to `jcenter()`, Now not need to add maven url to repositories `build.gradle` project level.
 If you still using `v1.0.0`, should add maven url to repositories `build.gradle` project level
