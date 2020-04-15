@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <public name="SlidingButton" type="style"/>
+    <public name="SlidingButton.Trackable" type="style"/>
+    <public name="SlidingButton.Trackable.Container" type="style"/>
+    <public name="SlidingButton.Rounded" type="style"/>
+    <public name="SlidingButton.RoundedTrackabale" type="style"/>
+    <public name="slidingButtonStyle" type="attr"/>
 </resources>

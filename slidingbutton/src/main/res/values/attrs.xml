@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <declare-styleable name="SlidingButton">
         <attr name="sliding_text" format="string|reference" />
         <attr name="sliding_text_size" format="dimension|reference" />
@@ -38,6 +38,16 @@
         <attr name="sliding_button_paddingTop" format="dimension|reference" />
         <attr name="sliding_button_paddingEnd" format="dimension|reference" />
         <attr name="sliding_button_paddingBottom" format="dimension|reference" />
+
+        <attr name="sliding_showTrack" format="boolean" />
+        <attr name="sliding_trackBackground" format="color|reference" />
+        <attr name="sliding_trackBackgroundTint" format="color|reference" />
+        <attr name="sliding_trackExtendTo" format="enum">
+            <enum value="0" name="container"/>
+            <enum value="1" name="button"/>
+        </attr>
+        <attr name="sliding_enabledTextAlpha" format="boolean" />
+        <attr name="sliding_corner_radius" format="dimension|reference"/>
     </declare-styleable>
 
     <attr name="slidingButtonStyle" format="reference" />

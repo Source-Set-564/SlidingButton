@@ -10,10 +10,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        slidingButton.setOnStatusChangeListener {
+        slidingButton.setOnStateChangeListener {
             if(it){
                 Handler().postDelayed({
-                    slidingButton.changeStatus(false,true)
+                    slidingButton.changeState(false,true)
                 },3000L)
             }
         }

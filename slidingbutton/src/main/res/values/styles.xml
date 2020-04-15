@@ -9,5 +9,23 @@
         <item name="sliding_button_background">@drawable/default_slidingbutton_background</item>
         <item name="sliding_button_icon">@drawable/ic_default_slide_icon</item>
         <item name="sliding_button_icon_tint">?attr/colorAccent</item>
+        <item name="sliding_enabledTextAlpha">true</item>
+    </style>
+
+    <style name="SlidingButton.Trackable">
+        <item name="sliding_showTrack">true</item>
+    </style>
+
+    <style name="SlidingButton.Trackable.Container">
+        <item name="sliding_trackExtendTo">container</item>
+    </style>
+
+    <style name="SlidingButton.Rounded">
+        <item name="sliding_corner_radius">8dp</item>
+    </style>
+
+    <style name="SlidingButton.RoundedTrackabale">
+        <item name="sliding_corner_radius">8dp</item>
+        <item name="sliding_showTrack">true</item>
     </style>
 </resources>

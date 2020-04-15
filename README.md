@@ -1,15 +1,31 @@
 # SlidingButton
 
 ![Min SDK](https://img.shields.io/badge/Min%20Sdk-17-orange)
-![Version](https://img.shields.io/badge/Version-v1.0.2-blue)
+![Version](https://img.shields.io/badge/Version-v2.0.0-blue)
 
-Slide button library for android, we hope this library is useful and easy to customize as you needed.
+Slide button library for android, we hope this library is useful and easy to customize as you needed. For additional information you can see [**change log**](https://github.com/Source-Set-564/SlidingButton/blob/master/CHANGELOG.md)
 
 ### Sample Preview
 
+
+
+#### Sample A
+
 <center style="background:#FCFCFC;">
-<img src="/previews/sliding_button_sample_preview.gif" alt="Preview" width="300" />
+<img src="previews/preview_sample_a_1.jpg" alt="Preview A-1" width="300" />
+<img src="previews/preview_sample_a_2.jpg" alt="Preview A-2" width="300" />
+<img src="previews/preview_sample_a_3.jpg" alt="Preview A-3" width="300" />
+<img src="previews/preview_sample_a_4.jpg" alt="Preview A-4" width="300" />
 </center>
+
+#### Sample B
+<center style="background:#FCFCFC;">
+<img src="previews/preview_sample_b_1.jpg" alt="Preview B-1" width="300" />
+<img src="previews/preview_sample_b_2.jpg" alt="Preview B-2" width="300" />
+<img src="previews/preview_sample_b_3.jpg" alt="Preview B-3" width="300" />
+<img src="previews/preview_sample_b_4.jpg" alt="Preview B-4" width="300" />
+</center>
+
 
 --------
 
@@ -22,7 +38,6 @@ implementation 'id.ss564.lib.slidingbutton:slidingbutton:<latest-version>'
 ```
 
 Then **sync** your gradle.
-
 
 ----------
 
@@ -43,7 +58,7 @@ In your *layout.xml* file, add the view
 
 Yeah... just add like code above. It's pretty simple :smile:
 
-You can use `SlidingButton.OnStatusChangeListener` to find out if the button is shifted or not. Just add a little bit code like below on your  `java` or `kotlin` file, for example on **MainActivity**
+You can use `SlidingButton.OnStateChangeListener` to find out if the button is shifted or not. Just add a little bit code like below on your  `java` or `kotlin` file, for example on **MainActivity**
 
 - Java
 
@@ -56,10 +71,10 @@ public class MainActivity extend AppCompatActivty {
         setContentView(R.layout.activity_main);
         
         SlidingButton mSlidingButton = findViewById(R.id.slidingButton);
-        mSlidingButton.setOnStatusChangeListener(new SlidingButton.OnStatusChangeListener(){
+        mSlidingButton.setOnStateChangeListener(new SlidingButton.OnStateChangeListener(){
             
             @Override
-            public void onStatusChange(boolean active){
+            public void onChange(boolean active){
                 //do what you wanna to do
             }
         })
@@ -78,8 +93,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         
         //access view using synthetic, do your own style to access the view :)
-        slidingButton.setOnStatusChangeListener { active ->
-	    //or using `object : SlidingButton.OnStatusChangeListener` instead of lambda
+        slidingButton.setOnStateChangeListener { active ->
+	    //or using `object : SlidingButton.OnStateChangeListener` instead of lambda
 	    
 	    //do what you wanna to do
         }
@@ -135,7 +150,27 @@ If you wanna customizing, please attention to the following attributes:
 
 - `app:sliding_button_marginStart`, `app:sliding_button_marginTop`, `app:sliding_button_marginEnd`, `app:sliding_button_marginBottom`
 
+- `app:sliding_enabledTextAlpha`
 
+  Use to alpha text when sliding, value of this attribute **Boolean**. Default value true
+
+- `app:sliding_showTrack`
+
+  Use to show track indicator when sliding, value of this attribute **Boolean**. Default value false
+
+- `app:sliding_trackBackground`
+
+  Use to set track indicator background.
+
+- `app:sliding_trackBackgroundTint`
+
+  Use to set tint track indicator background.
+
+- `app:sliding_trackExtendTo`
+
+  Use to set track extended to `container` or `button`
+
+- `app:sliding_corner_radius` only on API level 21 (Lollipop)
 
 
 
