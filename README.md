@@ -20,10 +20,10 @@ Slide button library for android, we hope this library is useful and easy to cus
 
 #### Sample B
 <center style="background:#FCFCFC;">
-<img src="previews/preview_sample_b_1.jpg" alt="Preview B-1" width="300" />
-<img src="previews/preview_sample_b_2.jpg" alt="Preview B-2" width="300" />
-<img src="previews/preview_sample_b_3.jpg" alt="Preview B-3" width="300" />
-<img src="previews/preview_sample_b_4.jpg" alt="Preview B-4" width="300" />
+<img src="previews/preview_sample_b_1.JPG" alt="Preview B-1" width="300" />
+<img src="previews/preview_sample_b_2.JPG" alt="Preview B-2" width="300" />
+<img src="previews/preview_sample_b_3.JPG" alt="Preview B-3" width="300" />
+<img src="previews/preview_sample_b_4.JPG" alt="Preview B-4" width="300" />
 </center>
 
 
