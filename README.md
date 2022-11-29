@@ -37,6 +37,15 @@ Add **dependencies** to your `build.gradle` file at `:app` or modules level
 implementation 'id.ss564.lib.slidingbutton:slidingbutton:<latest-version>'
 ```
 
+and don't forget add `jcenter()` to your repository
+```groovy
+repositories {
+    //...
+    jcenter()
+    //...
+}
+```
+
 Then **sync** your gradle.
 
 ----------
