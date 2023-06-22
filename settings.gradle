@@ -1,3 +1,0 @@
-rootProject.name='SS564 Sliding Button Library'
-include ':app'
-include ':slidingbutton'
